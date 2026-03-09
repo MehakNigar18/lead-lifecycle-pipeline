@@ -16,10 +16,9 @@ class SnowflakeConnection:
         self._connection: SnowflakeConn | None = None
 
     def connect(self) -> SnowflakeConn:
-        """
-        Establish a connection to Snowflake.
+       
+      #  Establish a connection to Snowflake.
 
-        """
 
         try:
             logger.info("Connecting to Snowflake account: %s", Settings.SNOWFLAKE_ACCOUNT)
