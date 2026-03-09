@@ -1,0 +1,62 @@
+{
+	"name": "ds_blob_leads_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_storage_leads",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "DummyData.csv",
+				"container": "leads-data"
+			},
+			"columnDelimiter": ";",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"nullValue": "True",
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Id",
+				"type": "String"
+			},
+			{
+				"name": "State",
+				"type": "String"
+			},
+			{
+				"name": "CreatedDateUtc",
+				"type": "String"
+			},
+			{
+				"name": "CancellationRequestDateUtc",
+				"type": "String"
+			},
+			{
+				"name": "CancellationDateUtc",
+				"type": "String"
+			},
+			{
+				"name": "CancellationRejectionDateUtc",
+				"type": "String"
+			},
+			{
+				"name": "CanceledEmployee",
+				"type": "String"
+			},
+			{
+				"name": "SoldEmployee",
+				"type": "String"
+			},
+			{
+				"name": "UpdatedDateUtc",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

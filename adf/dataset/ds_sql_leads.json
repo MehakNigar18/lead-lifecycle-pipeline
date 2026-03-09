@@ -1,0 +1,60 @@
+{
+	"name": "ds_sql_leads",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_azure_sql_leads",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "State",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CreatedDateUtc",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "CancellationRequestDateUtc",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "CancellationDateUtc",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "CancellationRejectionDateUtc",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "CanceledEmployee",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SoldEmployee",
+				"type": "nvarchar"
+			},
+			{
+				"name": "UpdatedDateUtc",
+				"type": "datetime2",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Leads"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

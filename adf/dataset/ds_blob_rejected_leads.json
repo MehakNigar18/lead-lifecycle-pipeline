@@ -1,0 +1,24 @@
+{
+	"name": "ds_blob_rejected_leads",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_storage_leads",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "ds_blob_rejected_leads",
+				"container": "rejected"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

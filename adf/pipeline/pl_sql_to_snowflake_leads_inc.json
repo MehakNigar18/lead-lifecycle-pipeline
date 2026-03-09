@@ -1,0 +1,240 @@
+{
+	"name": "pl_sql_to_snowflake_leads_inc",
+	"properties": {
+		"activities": [
+			{
+				"name": "lkp_get_watermark",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT LastLoadedUtc\nFROM etl.Watermark\nWHERE PipelineName = 'pl_sql_to_snowflake_leads_inc'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_sql_watermark",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "cpy_sql_to_snowflake_leads_inc",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "lkp_get_watermark",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "02:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat(\n'SELECT * FROM ',\npipeline().parameters.p_source_table,\n' WHERE UpdatedDateUtc > ''',\nactivity('lkp_get_watermark').output.firstRow.LastLoadedUtc,\n''''\n)",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SnowflakeV2Sink",
+						"importSettings": {
+							"type": "SnowflakeImportCopyCommand"
+						}
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "ls_blob_storage_leads",
+							"type": "LinkedServiceReference"
+						}
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Id",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "State",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "STATE",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "CreatedDateUtc",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "CREATEDDATEUTC",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CancellationRequestDateUtc",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "CANCELLATIONREQUESTDATEUTC",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CancellationDateUtc",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "CANCELLATIONDATEUTC",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CancellationRejectionDateUtc",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "CANCELLATIONREJECTIONDATEUTC",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "SoldEmployee",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SOLDEMPLOYEE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CanceledEmployee",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CANCELEDEMPLOYEE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "UpdatedDateUtc",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "UPDATEDDATEUTC",
+									"type": "DateTime"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_sql_leads",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_snowflake_raw_leads",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "sp_update_watermark",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "cpy_sql_to_snowflake_leads_inc",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[etl].[UpdateWatermark]",
+					"storedProcedureParameters": {
+						"PipelineName": {
+							"value": "sql_to_snowflake",
+							"type": "String"
+						},
+						"NewWatermark": {
+							"value": {
+								"value": "@utcNow()",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_azure_sql_leads",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"p_source_table": {
+				"type": "string",
+				"defaultValue": "dbo.Leads"
+			},
+			"p_target_table": {
+				"type": "string",
+				"defaultValue": "LEADS"
+			},
+			"p_watermark_column": {
+				"type": "string",
+				"defaultValue": "UpdatedDateUtc"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-03-07T13:41:37Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

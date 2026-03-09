@@ -1,0 +1,29 @@
+{
+	"name": "trg_sql_to_snowflake_leads_30min",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_sql_to_snowflake_leads_inc",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"p_source_table": "dbo.Leads",
+					"p_target_table": "LEADS",
+					"p_watermark_column": "CreatedDateUtc"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 30,
+				"startTime": "2026-03-07T12:55:00",
+				"timeZone": "W. Europe Standard Time"
+			}
+		}
+	}
+}

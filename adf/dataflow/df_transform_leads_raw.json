@@ -1,0 +1,107 @@
+{
+	"name": "df_transform_leads_raw",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_blob_leads_csv",
+						"type": "DatasetReference"
+					},
+					"name": "srcRawLeads",
+					"description": "Reads raw lead records from Azure Blob Storage."
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_sql_leads",
+						"type": "DatasetReference"
+					},
+					"name": "sinkSqlLeads",
+					"description": "Loads validated and deduplicated lead records into the SQL target table."
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_blob_rejected_leads",
+						"type": "DatasetReference"
+					},
+					"name": "sinkRejectedLeads",
+					"description": "Stores invalid lead records for monitoring and data quality investigation."
+				}
+			],
+			"transformations": [
+				{
+					"name": "selCleanColumns",
+					"description": "Standardizes the required lead columns for downstream loading."
+				},
+				{
+					"name": "splitValidLeads",
+					"description": "Separates valid and invalid lead records based on mandatory field validation."
+				},
+				{
+					"name": "aggDedupLeads",
+					"description": "Removes duplicate leads by Id while keeping the most recent record."
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Id as string,",
+				"          State as string,",
+				"          CreatedDateUtc as string,",
+				"          CancellationRequestDateUtc as string,",
+				"          CancellationDateUtc as string,",
+				"          CancellationRejectionDateUtc as string,",
+				"          CanceledEmployee as string,",
+				"          SoldEmployee as string,",
+				"          UpdatedDateUtc as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false) ~> srcRawLeads",
+				"aggDedupLeads select(skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selCleanColumns",
+				"srcRawLeads split(!isNull(Id) && !isNull(CreatedDateUtc),",
+				"     disjoint: false) ~> splitValidLeads@(validRows, invalidRows)",
+				"splitValidLeads@validRows aggregate(groupBy(Id),",
+				"     CreatedDateUtc = max(CreatedDateUtc),",
+				"          State = first(State),",
+				"          CancellationRequestDateUtc = max(CancellationRequestDateUtc),",
+				"          CancellationDateUtc = max(CancellationDateUtc),",
+				"          CancellationRejectionDateUtc = max(CancellationRejectionDateUtc),",
+				"          SoldEmployee = first(SoldEmployee),",
+				"          CanceledEmployee = first(CanceledEmployee),",
+				"          UpdatedDateUtc = max(UpdatedDateUtc)) ~> aggDedupLeads",
+				"selCleanColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: true,",
+				"     input(",
+				"          Id as string,",
+				"          State as integer,",
+				"          CreatedDateUtc as timestamp,",
+				"          CancellationRequestDateUtc as timestamp,",
+				"          CancellationDateUtc as timestamp,",
+				"          CancellationRejectionDateUtc as timestamp,",
+				"          CanceledEmployee as string,",
+				"          SoldEmployee as string,",
+				"          UpdatedDateUtc as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     preSQLs:['TRUNCATE TABLE dbo.Leads'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkSqlLeads",
+				"splitValidLeads@invalidRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkRejectedLeads"
+			]
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "ds_snowflake_raw_leads",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_snowflake_leads",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [],
+		"typeProperties": {
+			"schema": "RAW",
+			"table": "LEADS"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
