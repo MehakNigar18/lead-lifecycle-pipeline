@@ -17,10 +17,11 @@ Snowflake (LEADS) → Python Transformation → Snowflake (LEAD_EVENTS) → Powe
 """
 
 import logging
-from connectors.snowflake_connection import SnowflakeConnection
-from repositories.lead_repository import LeadRepository
-from repositories.lead_event_repository import LeadEventRepository
-from services.lead_event_transformer import LeadEventTransformer
+from app.python.connectors.snowflake_connection import SnowflakeConnection
+from app.python.repositories.lead_repository import LeadRepository
+from app.python.repositories.lead_event_repository import LeadEventRepository
+from app.python.services.lead_event_transformer import LeadEventTransformer
+from app.python.repositories.lead_event_repository import LeadEventRepository
 
  # Logging Configuration 
 

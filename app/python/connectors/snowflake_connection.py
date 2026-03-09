@@ -3,7 +3,7 @@
 
 import snowflake.connector
 from snowflake.connector import SnowflakeConnection as SnowflakeConn
-from config.settings import Settings
+from app.python.config.settings import Settings
 import logging
 
 logger = logging.getLogger(__name__)
