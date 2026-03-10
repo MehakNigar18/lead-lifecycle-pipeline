@@ -1,0 +1,112 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-lead-project"
+		},
+		"ls_azure_sql_leads_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_azure_sql_leads'"
+		},
+		"ls_snowflake_leads_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_snowflake_leads'"
+		},
+		"ls_azure_sql_leads_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "lead-sql-server.database.windows.net"
+		},
+		"ls_azure_sql_leads_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "lead_management_db"
+		},
+		"ls_azure_sql_leads_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "Leadadmin"
+		},
+		"ls_blob_storage_leads_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'ls_blob_storage_leads'"
+		},
+		"ls_snowflake_leads_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "LEADS_DB"
+		},
+		"trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_source_table": {
+			"type": "string",
+			"defaultValue": "dbo.Leads"
+		},
+		"trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_target_table": {
+			"type": "string",
+			"defaultValue": "LEADS"
+		},
+		"trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_watermark_column": {
+			"type": "string",
+			"defaultValue": "CreatedDateUtc"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "adf-lead-project_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ls_azure_sql_leads_password": {
+						"value": "[parameters('ls_azure_sql_leads_password')]"
+					},
+					"ls_snowflake_leads_password": {
+						"value": "[parameters('ls_snowflake_leads_password')]"
+					},
+					"ls_azure_sql_leads_properties_typeProperties_server": {
+						"value": "[parameters('ls_azure_sql_leads_properties_typeProperties_server')]"
+					},
+					"ls_azure_sql_leads_properties_typeProperties_database": {
+						"value": "[parameters('ls_azure_sql_leads_properties_typeProperties_database')]"
+					},
+					"ls_azure_sql_leads_properties_typeProperties_userName": {
+						"value": "[parameters('ls_azure_sql_leads_properties_typeProperties_userName')]"
+					},
+					"ls_blob_storage_leads_sasUri": {
+						"value": "[parameters('ls_blob_storage_leads_sasUri')]"
+					},
+					"ls_snowflake_leads_properties_typeProperties_database": {
+						"value": "[parameters('ls_snowflake_leads_properties_typeProperties_database')]"
+					},
+					"trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_source_table": {
+						"value": "[parameters('trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_source_table')]"
+					},
+					"trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_target_table": {
+						"value": "[parameters('trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_target_table')]"
+					},
+					"trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_watermark_column": {
+						"value": "[parameters('trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_watermark_column')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

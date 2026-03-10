@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-lead-project"
+		},
+		"ls_azure_sql_leads_password": {
+			"value": ""
+		},
+		"ls_snowflake_leads_password": {
+			"value": ""
+		},
+		"ls_azure_sql_leads_properties_typeProperties_server": {
+			"value": "lead-sql-server.database.windows.net"
+		},
+		"ls_azure_sql_leads_properties_typeProperties_database": {
+			"value": "lead_management_db"
+		},
+		"ls_azure_sql_leads_properties_typeProperties_userName": {
+			"value": "Leadadmin"
+		},
+		"ls_blob_storage_leads_sasUri": {
+			"value": ""
+		},
+		"ls_snowflake_leads_properties_typeProperties_database": {
+			"value": "LEADS_DB"
+		},
+		"trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_source_table": {
+			"value": "dbo.Leads"
+		},
+		"trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_target_table": {
+			"value": "LEADS"
+		},
+		"trg_sql_to_snowflake_leads_30min_properties_pl_sql_to_snowflake_leads_inc_parameters_p_watermark_column": {
+			"value": "CreatedDateUtc"
+		}
+	}
+}
