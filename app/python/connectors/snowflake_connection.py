@@ -1,49 +1,66 @@
 
-# Manages Snowflake database connections.
+ # Snowflake connection manager.
+
+ # Responsible for establishing and safely managing connections to the Snowflake data warehouse.
+
+
 
 import snowflake.connector
 from snowflake.connector import SnowflakeConnection as SnowflakeConn
-from app.python.config.settings import Settings
-import logging
 
-logger = logging.getLogger(__name__)
+from app.python.config.settings import settings
+from utils.logger import get_logger
+# Initialize project logger
+logger = get_logger(__name__)
 
 
 class SnowflakeConnection:
 
-
     def __init__(self) -> None:
+        # Internal Snowflake connection instance
         self._connection: SnowflakeConn | None = None
 
     def connect(self) -> SnowflakeConn:
-       
-      #  Establish a connection to Snowflake.
 
+        # Reuse existing connection if already established
+        if self._connection:
+            logger.debug("Reusing existing Snowflake connection")
+            return self._connection
 
         try:
-            logger.info("Connecting to Snowflake account: %s", Settings.SNOWFLAKE_ACCOUNT)
+            logger.info("Establishing connection to Snowflake")
 
             self._connection = snowflake.connector.connect(
-                user=Settings.SNOWFLAKE_USER,
-                password=Settings.SNOWFLAKE_PASSWORD,
-                account=Settings.SNOWFLAKE_ACCOUNT,
-                warehouse=Settings.SNOWFLAKE_WAREHOUSE,
-                database=Settings.SNOWFLAKE_DATABASE,
-                schema=Settings.SNOWFLAKE_SCHEMA_RAW,
+                user=settings.SNOWFLAKE_USER,
+                password=settings.SNOWFLAKE_PASSWORD,
+                account=settings.SNOWFLAKE_ACCOUNT,
+                warehouse=settings.SNOWFLAKE_WAREHOUSE,
+                database=settings.SNOWFLAKE_DATABASE,
+                schema=settings.SNOWFLAKE_SCHEMA_RAW,
             )
 
             logger.info("Snowflake connection established successfully")
+
             return self._connection
 
         except Exception as exc:
-            logger.error("Failed to connect to Snowflake: %s", exc)
+            logger.error("Snowflake connection failed: %s", exc)
             raise
 
     def close(self) -> None:
-        """
-        Close the Snowflake connection safely.
-        """
-
+       
+      #  Safely close the Snowflake connection.
+      
         if self._connection:
-            self._connection.close()
-            logger.info("Snowflake connection closed")
+            try:
+                self._connection.close()
+                logger.info("Snowflake connection closed")
+
+            except Exception as exc:
+                logger.warning(
+                    "Error while closing Snowflake connection: %s", exc
+                )
+
+            finally:
+                # Reset connection reference
+                self._connection = None

@@ -16,10 +16,9 @@ class LeadEventModel:
     updated_date_utc: datetime
 
     def to_dict(self) -> Dict[str, Any]:
-        """
-        Convert the event model into a dictionary compatible
-        with Snowflake insertion or pandas DataFrame creation.
-        """
+     
+      #  Convert the event model into a dictionary compatible with Snowflake insertion or pandas DataFrame creation.
+       
 
         return {
             "ID": self.id,
@@ -32,9 +31,9 @@ class LeadEventModel:
 
     @staticmethod
     def now_utc() -> datetime:
-        """
-        Helper method to generate a UTC timestamp. Ensures all pipeline events use a consistent timezone.
-        """
+      
+      #  Helper method to generate a UTC timestamp. Ensures all pipeline events use a consistent timezone.
+    
 
         return datetime.now(timezone.utc)
 

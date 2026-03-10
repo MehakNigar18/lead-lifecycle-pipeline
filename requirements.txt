@@ -2,4 +2,3 @@ azure-functions
 pandas
 snowflake-connector-python
 python-dotenv
-pyodbc
