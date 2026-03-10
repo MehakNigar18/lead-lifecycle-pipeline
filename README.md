@@ -17,38 +17,116 @@ The final transformed data is stored in <b>Snowflake Lead_Events tables</b> and 
 </p>
 
 ---
+<ul>
+  <li>Excel Dataset
+    <ul>
+      <li>Schema</li>
+      <li>Lead data collected from marketing sources</li>
+    </ul>
+  </li>
 
-<h2 align="center">Architecture</h2>
+  <li>Azure Blob Storage
+    <ul>
+      <li>Raw data landing zone</li>
+      <li>Stores uploaded Excel lead files</li>
+    </ul>
+  </li>
 
-<pre>
-Excel Dataset
-      │
-      ▼
-Azure Blob Storage
-      │
-      ▼
-Azure Data Factory Pipeline
-      │
-      ▼
-Azure SQL Database
-      │
-      ▼
-Snowflake RAW.LEADS
-      │
-      ▼
-Azure Function (HTTP Trigger)
-      │
-      ▼
-Python Transformation Pipeline
-      │
-      ▼
-Snowflake ANALYTICS.LEAD_EVENTS
-      │
-      ▼
-Power BI Dashboard
-</pre>
+  <li>Azure Data Factory Pipeline
+    <ul>
+      <li>Trigger
+        <ul>
+          <li>Schedule/Event trigger to start ingestion pipeline</li>
+        </ul>
+      </li>
 
+<li>Pipeline Orchestration</li>
+        <ul>
+          <li>Controls execution of ingestion and transformation steps</li>
+          <li>Manages dependencies between activities</li>
+        </ul>
+      </li>
+
+  <li>ADF Data Flow (df_transform_leads_raw)
+        <ul>
+          <li>Source
+            <ul>
+              <li>Read leads from Azure Blob Storage</li>
+            </ul>
+          </li>
+
+  <li>Schema Mapping
+            <ul>
+              <li>Map Excel fields to standardized pipeline schema</li>
+            </ul>
+          </li>
+
+  <li>Validation
+            <ul>
+              <li>Check required fields</li>
+              <li>Separate valid and invalid leads</li>
+            </ul>
+          </li>
+
+   <li>Transformation
+            <ul>
+              <li>Deduplicate leads (keep most recent record)</li>
+              <li>Clean and standardize required columns</li>
+            </ul>
+          </li>
+    <li>Sink
+            <ul>
+              <li>Valid leads → Azure SQL Database</li>
+              <li>Invalid leads → Rejected leads storage</li>
+            </ul>
+          </li>
+
+   </ul>
+      </li>
+    </ul>
+  </li>
+
+  <li>Azure SQL Database
+    <ul>
+      <li>Staging storage for validated leads</li>
+    </ul>
+  </li>
+
+  <li>Snowflake RAW.LEADS
+    <ul>
+      <li>Raw data warehouse layer</li>
+    </ul>
+  </li>
+
+  <li>Azure Function (HTTP Trigger)
+    <ul>
+      <li>API trigger to start Python transformation pipeline</li>
+    </ul>
+  </li>
+
+  <li>Python Transformation Pipeline
+    <ul>
+      <li>Apply business rules and data enrichment</li>
+      <li>Generate lead event records</li>
+    </ul>
+  </li>
+
+  <li>Snowflake ANALYTICS.LEAD_EVENTS
+    <ul>
+      <li>Store the transformed data in the LeadEvents table in Snowflake.</li>
+    </ul>
+  </li>
+
+  <li>Power BI Dashboard
+    <ul>
+      <li>Lead performance analytics and reporting</li>
+    </ul>
+  </li>
+</ul>
 ---
+
+
+
 
 <h2 align="center">Technologies Used</h2>
 
