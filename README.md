@@ -1,8 +1,23 @@
-Lead Lifecycle Data Engineering Pipeline Overview
+<h2 align="center">Power BI Dashboard</h2>
 
-This project implements a complete data engineering pipeline for processing lead lifecycle data and generating lifecycle events for analytics.
+<p align="center">
+This Power BI dashboard was created as an additional analytics layer to visualize pipeline-generated Lead Lifecycle events.
+</p>
 
-The pipeline ingests lead data from an Excel source, loads it into Azure Blob Storage, processes it through Azure Data Factory pipelines, stores raw data in Snowflake, and performs Python-based transformations triggered through an Azure Function App.
+<p align="center">
+<img src="docs/images/powerbi_dashboard.png" width="900">
+</p>
 
-The final transformed data is stored in Snowflake ANALYTICS tables for reporting and analysis.
+<p align="center">
+The dashboard provides insights into:
+</p>
 
+<ul>
+<li>Total leads processed</li>
+<li>Sold leads</li>
+<li>Cancelled leads</li>
+<li>Cancellation requests</li>
+<li>Lead lifecycle distribution</li>
+<li>Employee activity</li>
+<li>Lead trends over time</li>
+</ul>
