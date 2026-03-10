@@ -2,8 +2,7 @@
  # Snowflake connection manager.
 
  # Responsible for establishing and safely managing connections to the Snowflake data warehouse.
-
-
+ # ======================================================
 
 import snowflake.connector
 from snowflake.connector import SnowflakeConnection as SnowflakeConn

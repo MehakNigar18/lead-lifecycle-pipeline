@@ -1,7 +1,7 @@
-
+-- ======================================================
 -- Verbund Pflegehilfe Data Engineering Task
 -- Step 1: Create database for lead lifecycle data
-
+-- ======================================================
 CREATE DATABASE lead_management_db;
 GO
 
