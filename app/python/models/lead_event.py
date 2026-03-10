@@ -1,5 +1,5 @@
  #  Domain model representing a single lead lifecycle event.
-
+ # ====================================================== 
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any
