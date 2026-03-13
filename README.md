@@ -19,6 +19,23 @@
 
 <hr>
 
+<h2 align="center">Technologies Used</h2>
+
+<ul>
+  <li>Python</li>
+  <li>Azure Data Factory</li>
+  <li>Azure Blob Storage</li>
+  <li>Azure Functions</li>
+  <li>Azure SQL Database</li>
+  <li>Snowflake</li>
+  <li>Terraform</li>
+  <li>GitHub Actions (CI/CD)</li>
+  <li>Power BI</li>
+  <li>SQL</li>
+</ul>
+
+<hr>
+
 <h2 align="center">Architecture</h2>
 
 <pre>
@@ -65,30 +82,53 @@ resource "azurerm_storage_account" "lead_storage" {
 }
 </pre>
 
+<hr>
+
+<h2 align="center">CI/CD Pipeline</h2>
+
 <p>
-  Terraform ensures the Azure environment stays aligned with the project configuration.
+This project includes a <b>CI/CD pipeline using GitHub Actions</b> to automatically deploy infrastructure and validate Terraform configurations.
 </p>
+
+<ul>
+<li>Trigger on push to the <code>main</code> branch</li>
+<li>Authenticate to Azure using a Service Principal</li>
+<li>Initialize Terraform</li>
+<li>Run Terraform plan</li>
+<li>Deploy infrastructure using Terraform apply</li>
+</ul>
+
+<p>Workflow file location:</p>
+
+<pre>
+.github/workflows/terraform-deploy.yml
+</pre>
 
 <hr>
 
 <h2 align="center">Data Pipeline</h2>
 
 <h3>Data Ingestion</h3>
+
 <ul>
   <li>Excel dataset uploaded to <b>Azure Blob Storage</b></li>
   <li><b>Azure Data Factory</b> loads data into <b>Azure SQL Database</b></li>
 </ul>
 
 <p>Pipeline used:</p>
+
 <pre>pl_blob_to_sql_leads</pre>
 
 <h3>Incremental Processing</h3>
+
 <p>
   Incremental loading is implemented using the watermark column:
 </p>
+
 <pre>UpdatedDateUtc</pre>
 
 <p>Pipeline used:</p>
+
 <pre>pl_sql_to_snowflake_leads_inc</pre>
 
 <hr>
@@ -100,9 +140,11 @@ resource "azurerm_storage_account" "lead_storage" {
 </p>
 
 <p>Function name:</p>
+
 <pre>lead-lifecycle-transform-func</pre>
 
 <p>Processing steps:</p>
+
 <ol>
   <li>Read lead data from <b>Snowflake RAW.LEADS</b></li>
   <li>Apply business rules and lifecycle mapping</li>
@@ -139,24 +181,8 @@ resource "azurerm_storage_account" "lead_storage" {
 </ul>
 
 <p>Dashboard image:</p>
+
 <pre>docs/images/powerbi_dashboard.png</pre>
-
-<hr>
-
-<h2 align="center">Technologies Used</h2>
-
-<ul>
-  <li>Python</li>
-  <li>Azure Data Factory</li>
-  <li>Azure Blob Storage</li>
-  <li>Azure Functions</li>
-  <li>Azure SQL Database</li>
-  <li>Snowflake</li>
-  <li>Terraform</li>
-  <li>Power BI</li>
-  <li>SQL</li>
-  <li>GitHub</li>
-</ul>
 
 <hr>
 
@@ -165,12 +191,12 @@ resource "azurerm_storage_account" "lead_storage" {
 <pre>
 lead-lifecycle-pipeline
 │
-├── adf/               <!-- ADF pipelines and datasets -->
-├── app/python/        <!-- Python transformation logic -->
-├── sql/               <!-- SQL and Snowflake scripts -->
-├── terraform/         <!-- Terraform infrastructure -->
-├── docs/images/       <!-- Dashboard screenshots -->
-├── logs/              <!-- Pipeline logs -->
+├── adf/               (ADF pipelines and datasets)
+├── app/python/        (Python transformation logic)
+├── sql/               (SQL and Snowflake scripts)
+├── terraform/         (Terraform infrastructure)
+├── docs/images/       (Dashboard screenshots)
+├── logs/              (Pipeline logs)
 ├── requirements.txt
 └── README.md
 </pre>
