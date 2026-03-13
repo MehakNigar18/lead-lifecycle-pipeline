@@ -168,7 +168,7 @@ lead-lifecycle-pipeline
 │   ├── 02_create_schema.sql
 │   ├── 03_create_leads_table.sql
 │   └── 04_snowflake_setup.sql
-    └── 04_star_schema.sql
+    └── 05_star_schema.sql
 │
 ├── docs/
 │   └── images/
