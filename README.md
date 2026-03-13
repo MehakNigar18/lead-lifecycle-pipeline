@@ -180,6 +180,37 @@ lead-lifecycle-pipeline
 
 ---
 
+<h2>Run the Transformation</h2>
+
+<p>
+The Python transformation pipeline is triggered through the Azure Function App.
+Once the data is loaded into Snowflake <code>RAW.LEADS</code>, you can start the transformation by calling the Function App endpoint.
+</p>
+
+<h3>Trigger the Function</h3>
+
+<ol>
+  <li>Deploy the Azure Function App included in this repository.</li>
+  <li>Locate the HTTP trigger URL of the function in the Azure Portal.</li>
+  <li>Send a request to the endpoint to start the transformation.</li>
+</ol>
+
+
+
+<p>
+This will execute the Python transformation logic and generate lifecycle events
+in the <code>ANALYTICS.LEAD_EVENTS</code> table in Snowflake.
+</p>
+
+<h3>What Happens After Triggering</h3>
+
+<ul>
+<li>The Azure Function starts the Python pipeline.</li>
+<li>The script reads lead data from <code>RAW.LEADS</code>.</li>
+<li>Lifecycle events are generated.</li>
+<li>Results are written to <code>ANALYTICS.LEAD_EVENTS</code>.</li>
+</ul>
+----
 <h2 align="center">Data Ingestion</h2>
 
 <p>
