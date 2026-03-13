@@ -168,6 +168,7 @@ lead-lifecycle-pipeline
 │   ├── 02_create_schema.sql
 │   ├── 03_create_leads_table.sql
 │   └── 04_snowflake_setup.sql
+    └── 04_star_schema.sql
 │
 ├── docs/
 │   └── images/
@@ -268,28 +269,20 @@ pl_sql_to_snowflake_leads_inc
 
 ---
 
-<h2 align="center">Snowflake Data Warehouse</h2>
+<h2>Snowflake Data Warehouse Model</h2>
 
-<p>Snowflake is used as the central analytics data warehouse.</p>
+<p>The analytics schema follows a star schema design:</p>
 
-<pre>
-LEADS_DB
-│
-├── RAW
-│   └── LEADS
-│
-└── ANALYTICS
-    └── LEAD_EVENTS
-</pre>
+<ul>
+  <li>FACT_LEAD_EVENTS</li>
+  <li>DIM_EMPLOYEE</li>
+  <li>DIM_DATE</li>
+</ul>
 
-<p>SQL scripts used for Snowflake setup:</p>
-
-<pre>
-01_create_database.sql
-02_create_schema.sql
-03_create_leads_table.sql
-04_snowflake_setup.sql
-</pre>
+<p>
+  This structure supports efficient analytical queries and
+  Power BI reporting.
+</p>
 
 ---
 
